@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>A enviar vídeo…</title>
+<style>body{font-family:system-ui,sans-serif;background:#061116;color:#eaf4f5;display:grid;place-items:center;height:100vh;margin:0}</style></head>
+<body><p id="m">A enviar o vídeo para o LinkedIn…</p>
+<script>
+(async function(){
+  var m = document.getElementById("m");
+  var v = new URLSearchParams(location.search).get("v") || "1";
+  if (!/^[1-9][0-9]?$/.test(v)){ m.textContent = "Vídeo inválido."; return; }
+  if (!window.opener){ m.textContent = "Esta página só funciona aberta a partir do LinkedIn."; return; }
+  try {
+    var r = await fetch("techforyou-video" + v + ".mp4", {cache:"no-store"});
+    var b = await r.blob();
+    window.opener.postMessage({t4yVideo:b, name:"techforyou-video" + v + ".mp4"}, "https://www.linkedin.com");
+    m.textContent = "Vídeo " + v + " enviado. Pode fechar esta janela.";
+    setTimeout(function(){ window.close(); }, 800);
+  } catch(e){ m.textContent = "Não foi possível enviar o vídeo: " + e.message; }
+})();
+</script></body></html>
